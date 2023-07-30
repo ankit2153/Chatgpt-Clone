@@ -3,7 +3,7 @@ from flask_pymongo import PyMongo
 
 import openai
 
-openai.api_key = "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"
+openai.api_key = "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"
 
 
 app = Flask(__name__)
@@ -33,7 +33,7 @@ def qa():
         print(chat)
 
         if chat:
-            data = {"result": {chat['answer']}}
+            data = {"question": question,"answer":chat['answer']}
             return jsonify(data)
         else:
             response = openai.ChatCompletion.create(
@@ -53,8 +53,10 @@ def qa():
 
             print(response['choices'][0]['message']['content'])
 
-            mongo.db.chats.insert_one({"question": question,"answer":response['choices'][0]['message']['content'] })
-            data = {"question": question,"answer":response['choices'][0]['message']['content']}
+            mongo.db.chats.insert_one(
+                {"question": question, "answer": response['choices'][0]['message']['content']})
+            data = {"question": question,
+                    "answer": response['choices'][0]['message']['content']}
             return jsonify(data)
 
     data = {"result": "this is the first result of my chatgpt clone"}
